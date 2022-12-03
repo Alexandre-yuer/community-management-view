@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="assets/css/right.css" rel="stylesheet">
+    <script src="assets/vue.min-v2.5.16.js"></script>
+</head>
+<body>
+    <div id="app">
+<!--        我是首页，id={{userId}}-->
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                userId: null
+            },
+            created: function () {
+                var url = window.location.href;
+                console.log(url);
+                this.userId = url.substring(url.indexOf('=')+1);
+            }
+        });
+    </script>
+</body>
+</html>

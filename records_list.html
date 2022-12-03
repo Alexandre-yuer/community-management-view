@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="assets/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/right.css" rel="stylesheet">
+    <script src="assets/jquery-3.5.1.min.js"></script>
+    <script src="assets/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="assets/vue.min-v2.5.16.js"></script>
+    <script src="assets/vue-router.min-2.7.0.js"></script>
+    <script src="assets/axios.min.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="row" style="background-color: white; height: 60px; padding: 13px; border: none; border-radius: 8px;">
+            <div class="col-md-1 col-md-offset-1">
+                <label style="height: 34px; line-height: 34px;">门牌号:</label>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" v-model="houseNum">
+            </div>
+            <div class="col-md-2 col-md-offset-1">
+                <label style="height: 34px; line-height: 34px;">费用类型:</label>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control" v-model="propertyName">
+                    <option value="水费">水费</option>
+                    <option value="电费">电费</option>
+                    <option value="物业费">物业费</option>
+                    <option value="车位费">车位费</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-primary" @click="doSelect">查询</button>
+            </div>
+        </div>
+
+        <div class="col-md-12" style="height: 50px; line-height: 50px;">
+            <button class="btn btn-info" @click="doAdd">添加</button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <caption>抄表列表</caption>
+                    <thead>
+                    <tr>
+                        <th>门牌号</th>
+                        <th>户主</th>
+                        <th>费用类型</th>
+                        <th>上次度数</th>
+                        <th>本次度数</th>
+                        <th>登记时间</th>
+                        <th>抄表员</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="r in recordsList">
+                        <td>{{r.houseNumbers}}</td>
+                        <td>{{r.ownerName}}</td>
+                        <td>{{r.propertyName}}</td>
+                        <td>{{r.num}}</td>
+                        <td>{{r.num2}}</td>
+                        <td>{{r.checkTime}}</td>
+                        <td>{{r.meter}}</td>
+                        <td>
+<!--                            <button class="btn btn-primary" @click="doUpdate(r.id)">修改</button>-->
+                            <button class="btn btn-danger" @click="doDelete(r.id)">删除</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <ul class="pagination" v-for="p in pageNum">
+                    <li v-if="p == pageIndex" class="active"><a @click="doGo(p)">{{p}}</a></li>
+                    <li v-else="p == pageIndex" ><a @click="doGo(p)">{{p}}</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                recordsList:null,
+
+                houseNum:null,//门牌号
+                propertyName:null,//费用类型
+
+                pageIndex:1,
+                pageSize:2,
+                pageTotal:0,
+                pageNum:0
+            },
+            methods: {
+                //请求抄表列表
+                requestParkingList(p){
+                    axios.get("http://localhost:8080/records/list?pageIndex="+p+"&pageSize="+this.pageSize+"&numbers="+this.houseNum+"&type="+this.propertyName).then(response => {
+                        console.log(response.data);
+                        this.recordsList = response.data.data;
+                        this.pageTotal = response.data.pageTotal;
+                        this.pageNum = Math.ceil(this.pageTotal/this.pageSize);
+                    });
+                },
+                //分页
+                doGo(p){
+                    this.pageIndex = p;
+                    this.requestParkingList(this.pageIndex);
+                },
+                //搜索
+                doSelect(){
+                    this.requestParkingList(this.pageIndex);
+                },
+                //添加
+                doAdd(){
+                    window.parent.main_right.location.href = "records_add_update.html";
+                },
+                // //修改
+                // doUpdate(id){
+                //     window.parent.main_right.location.href = "records_add_update.html?id="+id;
+                // },
+                //删除
+                doDelete(id){
+                    axios.get("http://localhost:8080/records/remove?id="+id).then(response => {
+                        if(response.data.code == 200){//删除成功
+                            this.requestParkingList(1);
+                        }else{//删除失败
+                            alert(response.data.msg)
+                        }
+                    });
+                }
+            },
+            created: function () {
+                this.requestParkingList(this.pageIndex);
+            }
+        });
+    </script>
+</body>
+</html>

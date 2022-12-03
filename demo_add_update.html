@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="assets/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/right.css" rel="stylesheet">
+    <script src="assets/jquery-3.5.1.min.js"></script>
+    <script src="assets/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="assets/vue.min-v2.5.16.js"></script>
+    <script src="assets/vue-router.min-2.7.0.js"></script>
+    <script src="assets/axios.min.js"></script>
+    <script src="assets/date_picker.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="row">
+                    <div class="col-md-12" style="text-align: center; font-weight: bold; font-size: 18px; height: 80px; line-height: 80px;">
+                        {{title}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3" style="height: 80px;">
+                        <label>用户名</label>
+                        <input type="text" class="form-control" v-model="formData.userName">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3" style="height: 80px;">
+                        <label>性别</label>
+                        <label class="radio-inline">
+                            <input type="radio" name="sex" value="0" v-model="formData.sex">男
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="sex" value="1" v-model="formData.sex">女
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3" style="height: 80px;">
+                        <label>角色</label>
+                        <select class="form-control" v-model="formData.role">
+                            <option v-for="r in roleList" :value="r.id">{{r.label}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3" style="height: 80px;">
+                        <label>出生日期</label>
+                        <input type="text" class="form-control" onclick="calendar(event)" v-model="formData.birth">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3" style="height: 80px;">
+                        <button class="btn btn-primary" @click="doSave">保存</button>
+                        <button class="btn btn-default" @click="doCancel">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                title: null,
+                formData: {
+                    userName: null,
+                    sex: null,
+                    role: null,
+                    birth: null
+                },
+                userId: null,
+                roleList: [
+                    {id:0, label:'管理员'},
+                    {id:1, label:'普通用户'}
+                ]
+            },
+            methods: {
+                doSave(){
+                    if(this.userId != null){ //修改
+
+                    } else { //保存
+
+                    }
+                },
+                doCancel(){
+                   history.go(-1);
+                }
+            },
+            created: function () {
+                var url = window.location.href;
+                if(url.indexOf('id') != -1){
+                    this.userId = url.substring(url.indexOf('=')+1);
+                }
+                console.log("接收传参-用户ID："+this.userId);
+                if(this.userId != null){
+                    this.title = "修改用户";
+                    //模拟数据
+                    this.formData.userName = "张三";
+                    this.formData.sex = 1;
+                    this.formData.role = 1;
+                    this.formData.birth = "2000-01-02";
+                } else {
+                    this.title = "添加用户";
+                }
+            }
+        });
+    </script>
+</body>
+</html>

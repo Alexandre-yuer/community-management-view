@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div style="width: 1200px; margin-left: auto; margin-right: auto;">
+        <!-- loading:lazy 解决新版chrome和firefox不支持iframe问题 -->
+        <iframe name="main_top" src="top.html" loading="lazy" frameborder="0" width="1200" height="100" scrolling="no" style="display: block;"></iframe>
+        <iframe name="main_left" src="left.html" loading="lazy" frameborder="0" width="182" height="700" scrolling="no" style="float: left;"></iframe>
+        <iframe name="main_right" src="index.html" loading="lazy" frameborder="0" width="1018" height="700" scrolling="no" style="float:left;"></iframe>
+    </div>
+</body>
+</html>
